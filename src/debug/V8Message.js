@@ -1,0 +1,43 @@
+var V8Message = function(type) {
+    this.seq = V8Message.$seq++;
+    this.type = type;
+};
+
+(function() {
+
+    this.$msgKeys = [
+        "seq",
+        "type",
+        "command",
+        "arguments",
+        "request_seq",
+        "body",
+        "running",
+        "success",
+        "message",
+        "event"
+    ];
+
+    this.parse = function(msgString) {
+        var json = JSON.parse(msgString);
+        ace.mixin(this, json);
+        return this;
+    };
+
+    this.stringify = function() {
+        return JSON.stringify(this, this.$msgKeys);
+    };
+
+}).call(V8Message.prototype);
+
+V8Message.$seq = 1;
+
+V8Message.fromString = function(msgString) {
+    return new V8Message().parse(msgString);
+};
+
+V8Message.fromObject = function(obj) {
+    var msg = new V8Message();
+    ace.mixin(msg, obj);
+    return msg;
+};
