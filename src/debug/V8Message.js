@@ -25,7 +25,14 @@ var V8Message = function(type) {
     };
 
     this.stringify = function() {
-        return JSON.stringify(this, this.$msgKeys);
+        var tmp = {};
+        for (var i=0; i<this.$msgKeys.length; i++) {
+            var name = this.$msgKeys[i];
+            if (this[name]) {
+                tmp[name] = this[name];
+            }
+        }
+        return JSON.stringify(tmp);
     };
 
 }).call(V8Message.prototype);
