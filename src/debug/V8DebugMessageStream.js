@@ -53,7 +53,7 @@ var V8DebugMessageStream = function(socket) {
 
         // if there are whole messages on the pipe let's dispatch them
         while (fullResponse = this.$checkForWholeMessage()) {
-            console.log("> Received from Chrome:\n", fullResponse);
+//            console.log("> Received from Chrome:\n", fullResponse);
             this.$dispatchResponse(new DevToolsMessage.fromString(fullResponse));
         }
     };
@@ -79,7 +79,10 @@ var V8DebugMessageStream = function(socket) {
     };
 
     this.$dispatchResponse = function(response) {
-        this.$dispatchEvent("message", {data: response});
+        var self = this;
+        setTimeout(function() {
+            self.$dispatchEvent("message", {data: response});
+        }, 0);
     };
 
     this.$onerror = function() {
