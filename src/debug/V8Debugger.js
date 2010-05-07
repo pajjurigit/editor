@@ -1,5 +1,6 @@
 var V8Debugger = function(tabId, v8service) {
     this.tabId = tabId;
+    this.$running = true;
     this.$service = v8service;
 
     var pending = this.$pending = [];
@@ -7,15 +8,17 @@ var V8Debugger = function(tabId, v8service) {
     var self = this;
     this.$service.addEventListener("debugger_command_" + tabId, function(e) {
         var response = V8Message.fromObject(e.data);
+
         var requestSeq = response.request_seq;
         if (pending[requestSeq]) {
             pending[requestSeq](response.body);
             delete pending[requestSeq];
         }
-
-        if (response.event) {
+        else if (response.event) {
             self.$dispatchEvent(response.event, {data: response.body});
         }
+
+        self.$updateRunning(response);
      });
 };
 
@@ -24,6 +27,26 @@ var V8Debugger = function(tabId, v8service) {
     ace.implement(this, ace.MEventEmitter);
 
     this.$seq = 0;
+
+    this.$updateRunning = function(response) {
+        var running = true;
+        if (response.type == "response") {
+            var running = response.running;
+        } else if (response.type == "event") {
+            if (response.event == "break" || response.event == "exception") {
+                running = false;
+            }
+        }
+
+        if (running !== this.$running) {
+            this.$running = running;
+            this.$dispatchEvent("changeRunning", running);
+        }
+    };
+
+    this.isRunning = function() {
+        return this.$running;
+    };
 
     this.continueScript = function(stepaction, stepcount, callback) {
         var msg = new V8Message("request");
