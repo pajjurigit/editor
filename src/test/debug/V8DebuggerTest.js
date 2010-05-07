@@ -51,9 +51,7 @@ var V8DebuggerTest = new TestCase("V8DebuggerTest", {
 
     "test: step into": function() {
         var called = false;
-
         V8Message.$seq = 254;
-
         this.$debugger.continueScript("in", 1, function() {
             called = true;
         });
