@@ -89,6 +89,65 @@ var V8DebuggerTest = new TestCase("V8DebuggerTest", {
         assertTrue(called);
     },
 
+    "test: lookup": function() {
+        var called = false;
+        V8Message.$seq = 280;
+        this.$debugger.lookup([83,121,123], false, function() {
+            called = true;
+        });
+
+        var request = {
+            "command":"debugger_command",
+            "data":{
+                "seq":280,
+                "type":"request",
+                "command":"lookup",
+                "arguments":{
+                    "inlineRefs":false,
+                    "handles":[83,121,123]
+                }
+            }
+        };
+
+        assertJsonEquals(request, JSON.parse(this.$msgStream.requests[0].getContent()));
+
+        var response = {
+            "command":"debugger_command",
+            "result":0,
+            "data":{
+                "seq":60,
+                "request_seq":280,
+                "type":"response",
+                "command":"lookup",
+                "success":true,
+                "body":{
+                    "83":{
+                        "handle":83,
+                        "type":"number",
+                        "value":4,
+                        "text":"4"
+                    },
+                    "121":{
+                        "handle":121,
+                        "type":"number",
+                        "value":3,
+                        "text":"3"
+                    },
+                    "123":{
+                        "handle":123,
+                        "type":"string",
+                        "value":"#text",
+                        "length":5,
+                        "text":"#text"
+                    },
+                    "running":false
+                }
+            }
+        };
+        this.sendMessage(JSON.stringify(response));
+        assertTrue(called);
+    },
+
     "test: version": function() {
         var called = false;
 

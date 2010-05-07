@@ -37,6 +37,19 @@ var V8Debugger = function(tabId, v8service) {
         this.$send(msg, callback);
     };
 
+    this.lookup = function(handles, includeSource, callback) {
+        var msg = new V8Message("request");
+        msg.command = "lookup";
+        msg.arguments = {
+            inlineRefs: false,
+            handles: handles
+        };
+        if (includeSource)
+            msg.arguments.includesSource = includeSource;
+
+        this.$send(msg, callback);
+    };
+
     this.version = function(callback) {
         var msg = new V8Message("request");
         msg.command = "version";
