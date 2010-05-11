@@ -21,7 +21,7 @@ var V8DebugMessageStream = function(socket) {
     };
 
     this.sendRequest = function(message) {
-        console.log("> Sent to Chrome:\n", message.stringify());
+//        console.log("> Sent to Chrome:\n", message.stringify());
         this.$socket.send(message.stringify());
     };
 
