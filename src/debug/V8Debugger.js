@@ -11,7 +11,7 @@ var V8Debugger = function(tabId, v8service) {
 
         var requestSeq = response.request_seq;
         if (pending[requestSeq]) {
-            pending[requestSeq](response.body);
+            pending[requestSeq](response.body, response.refs || null);
             delete pending[requestSeq];
         }
         else if (response.event) {
@@ -69,6 +69,24 @@ var V8Debugger = function(tabId, v8service) {
         };
         if (includeSource)
             msg.arguments.includesSource = includeSource;
+
+        this.$send(msg, callback);
+    };
+
+    this.backtrace = function(fromFrame, toFrame, bottom, inlineRefs, callback) {
+        var msg = new V8Message("request");
+        msg.command = "backtrace";
+        msg.arguments = {
+                inlineRefs: !!inlineRefs
+        };
+        if (fromFrame)
+            msg.arguments.fromFrame = fromFrame;
+
+        if (toFrame)
+            msg.arguments.toFrame = toFrame;
+
+        if (typeof(bottom) == "boolean")
+            msg.arguments.bottom = bottom;
 
         this.$send(msg, callback);
     };

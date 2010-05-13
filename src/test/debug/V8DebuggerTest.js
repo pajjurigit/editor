@@ -146,6 +146,86 @@ var V8DebuggerTest = new TestCase("V8DebuggerTest", {
         assertTrue(called);
     },
 
+    "test: backtrace": function() {
+        var called = false;
+        V8Message.$seq = 4;
+        this.$debugger.backtrace(null, null, null, true, function() {
+            called = true;
+        });
+
+        var request = {
+            "command":"debugger_command",
+            "data":{
+                "seq":4,
+                "type":"request",
+                "command":"backtrace",
+                "arguments":{"inlineRefs":true}
+            }
+        };
+
+        assertJsonEquals(request, JSON.parse(this.$msgStream.requests[0].getContent()));
+
+        var response = {
+            "command":"debugger_command",
+            "result":0,
+            "data":{
+                "seq":54,
+                "request_seq":4,
+                "type":"response",
+                "command":"backtrace",
+                "success":true,
+                "body":{
+                    "fromFrame":0,
+                    "toFrame":1,
+                    "totalFrames":1,
+                    "frames":[{
+                        "type":"frame",
+                        "index":0,
+                        "receiver":{"ref":1,"type":"object","className":"HTMLTextAreaElement"},
+                        "func":{"ref":0,"type":"function","name":"logKey","inferredName":"","scriptId":18},
+                        "script":{"ref":13},
+                        "constructCall":false,
+                        "debuggerFrame":false,
+                        "arguments":[{
+                            "name":"e","value":{"ref":10,"type":"object","className":"KeyboardEvent"}
+                        }],
+                        "locals":[{
+                            "name":"x","value":{"ref":3,"type":"undefined"}
+                        }],
+                        "position":735,
+                        "line":69,
+                        "column":4,
+                        "sourceLineText":"    console.log(e.type, e.charCode, e.keyCode, e);",
+                        "scopes":[
+                              {"type":1,"index":0},
+                              {"type":0,"index":1}
+                        ],
+                        "text":"#00 #<an HTMLTextAreaElement>.logKey(e=#<a KeyboardEvent>) file:///Users/fabianpb/Desktop/EclipseWorkspaces/ajax.org/editor/experiments/key_event_logger.html line 70 column 5 (position 736)"}
+                    ]
+                },
+                "refs":[{
+                    "handle":13,
+                    "type":"script",
+                    "name":"file:///Users/fabianpb/Desktop/EclipseWorkspaces/ajax.org/editor/experiments/key_event_logger.html",
+                    "id":18,
+                    "lineOffset":38,
+                    "columnOffset":0,
+                    "lineCount":59,
+                    "sourceStart":"\n    \nwindow.console = {};\n//if (!console.log) {\n    var logger = document.getEl",
+                    "sourceLength":1547,
+                    "scriptType":2,
+                    "compilationType":0,
+                    "context":{"ref":12},
+                    "text":"file:///Users/fabianpb/Desktop/EclipseWorkspaces/ajax.org/editor/experiments/key_event_logger.html (lines: 38-96)"
+                }],
+                "running":false
+            }
+        };
+
+        this.sendMessage(JSON.stringify(response));
+        assertTrue(called);
+    },
+
     "test: version": function() {
         var called = false;
 
