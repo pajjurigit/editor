@@ -13,11 +13,17 @@ var StandaloneV8DebuggerService = function(socket) {
 
         var self = this;
         this.$reader = new MessageReader(this.$socket, function(messageText) {
-            console.log("Connect>", messageText);
+//            console.log("Connect>", messageText);
             self.$reader = new MessageReader(self.$socket, ace.bind(self.$onMessage, self));
             callback();
         });
         this.$socket.connect();
+    };
+
+    this.detach = function(tabId, callback) {
+        this.$socket.close();
+        this.$attached = false;
+        callback();
     };
 
     this.$onMessage = function(messageText) {
