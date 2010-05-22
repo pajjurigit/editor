@@ -43,8 +43,8 @@ var V8DebuggerService = function(msgStream) {
         this.$send(tabId, "evaluate_javascript", '"' + jsCode + '"', null);
     };
 
-    this.debuggerCommand = function(tabId, v8Command, callback) {
-        this.$send(tabId, "debugger_command", v8Command, callback);
+    this.debuggerCommand = function(tabId, v8Command) {
+        this.$send(tabId, "debugger_command", v8Command);
         var self = this;
         setTimeout(function() {
             self.$send(tabId, "evaluate_javascript", '"javascript:void(0);"', null);
