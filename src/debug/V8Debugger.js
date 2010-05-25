@@ -40,7 +40,7 @@ var V8Debugger = function(tabId, v8service) {
 
         if (running !== this.$running) {
             this.$running = running;
-            this.$dispatchEvent("changeRunning", running);
+            this.$dispatchEvent("changeRunning", {data: running});
         }
     };
 
@@ -87,6 +87,20 @@ var V8Debugger = function(tabId, v8service) {
 
         if (typeof(bottom) == "boolean")
             msg.arguments.bottom = bottom;
+
+        this.$send(msg, callback);
+    };
+
+    this.scope = function(number, frameNumber, inlineRefs, callback) {
+        var msg = new V8Message("request");
+        msg.command = "scope";
+        msg.arguments = {
+            number: number,
+            inlineRefs: !!inlineRefs
+        };
+
+        if (typeof frameNumber == "number")
+            msg.arguments.frameNumber = frameNumber;
 
         this.$send(msg, callback);
     };
@@ -155,6 +169,12 @@ var V8Debugger = function(tabId, v8service) {
         msg.arguments = {
             breakpoint: breakpoint
         };
+        this.$send(msg, callback);
+    };
+
+    this.suspend = function(callback) {
+        var msg = new V8Message("request");
+        msg.command = "suspend";
         this.$send(msg, callback);
     };
 

@@ -226,6 +226,75 @@ var V8DebuggerTest = new TestCase("V8DebuggerTest", {
         assertTrue(called);
     },
 
+    "test: scope" : function() {
+        var called = false;
+
+        V8Message.$seq = 24;
+
+        this.$debugger.scope(0, 0, true, function() {
+            called = true;
+        });
+
+        var request = {
+            "command":"debugger_command",
+            "data":{
+                "seq":24,
+                "type":"request",
+                "command":"scope",
+                "arguments":{
+                    "number":0,
+                    "inlineRefs":true,
+                    "frameNumber":0
+                }
+            }
+        };
+        assertJsonEquals(request, JSON.parse(this.$msgStream.requests[0].getContent()));
+
+        var response = {
+            "command":"debugger_command",
+            "result":0,
+            "data": {
+                "seq":42,
+                "request_seq":24,
+                "type":"response",
+                "command":"scope",
+                "success":true,
+                "body":{
+                    "type":1,
+                    "index":0,
+                    "frameIndex":0,
+                    "object":{
+                        "handle":-4,
+                        "type":"object",
+                        "className":"Object",
+                        "constructorFunction":{
+                            "ref":21,
+                            "type":"function",
+                            "name":"Object",
+                            "inferredName":""
+                        },
+                        "protoObject":{
+                            "ref":22,
+                            "type":"object",
+                            "className":"Object"
+                        },
+                        "prototypeObject":{
+                            "ref":3,
+                            "type":"undefined"
+                        },
+                        "properties":[],
+                        "text":"#<an Object>"
+                    },
+                    "text":"#<a ScopeMirror>"
+                },
+                "refs":[],
+                "running":false
+            }
+        };
+        this.sendMessage(JSON.stringify(response));
+        assertTrue(called);
+    },
+
     "test: version": function() {
         var called = false;
 
@@ -592,6 +661,37 @@ var V8DebuggerTest = new TestCase("V8DebuggerTest", {
                     "length":5,
                     "text":"Buhhh"
                 }]
+            }
+        };
+        this.sendMessage(JSON.stringify(response));
+        assertTrue(called);
+    },
+
+    "test: suspend" : function() {
+        var called = false;
+
+        V8Message.$seq = 7;
+
+        this.$debugger.suspend(function() {
+            called = true;
+        });
+
+        var request = {
+            "command":"debugger_command",
+            "data":{"seq":7,"type":"request","command":"suspend"}
+        };
+        assertJsonEquals(request, JSON.parse(this.$msgStream.requests[0].getContent()));
+
+        var response = {
+            "command":"debugger_command",
+            "result":0,
+            "data": {
+                "seq":18,
+                "request_seq":7,
+                "type":"response",
+                "command":"suspend",
+                "success":true,
+                "running":false
             }
         };
         this.sendMessage(JSON.stringify(response));
