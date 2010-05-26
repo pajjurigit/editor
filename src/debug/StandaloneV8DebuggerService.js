@@ -27,12 +27,14 @@ var StandaloneV8DebuggerService = function(socket) {
     };
 
     this.$onMessage = function(messageText) {
-//        console.log("RECEVIE>", messageText);
 
-        var response = new DevToolsMessage.fromString(messageText);
-        var content = JSON.parse(response.getContent());
-
-        this.$dispatchEvent("debugger_command_0", {data: content});
+        var self = this;
+        setTimeout(function() {
+//            console.log("RECEVIE>", messageText);
+            var response = new DevToolsMessage.fromString(messageText);
+            var content = JSON.parse(response.getContent());
+            self.$dispatchEvent("debugger_command_0", {data: content});
+        }, 0);
     };
 
     this.debuggerCommand = function(tabId, v8Command) {

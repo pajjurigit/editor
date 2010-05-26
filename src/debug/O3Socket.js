@@ -1,5 +1,6 @@
 var O3Socket = function(ip, port, o3) {
     this.$socket = o3.socketTCP();
+    this.$socket.packetSize = 8192;
     this.$ip = ip;
     this.$port = port;
 };
@@ -29,6 +30,10 @@ var O3Socket = function(ip, port, o3) {
         this.$socket.receive();
     };
 
+    this.setMinReceiveSize = function(minSize) {
+        this.$socket.minReceiveSize = minSize;
+    };
+    
     this.connect = function() {
         var socket = this.$socket;
         var self = this;
