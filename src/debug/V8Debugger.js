@@ -29,6 +29,12 @@ var V8Debugger = function(tabId, v8service) {
     this.$seq = 0;
 
     this.$updateRunning = function(response) {
+        
+        // workaround for V8 bug
+        // http://code.google.com/p/v8/issues/detail?id=724
+        if (response.event == "scriptCollected")
+            return;
+        
         var running = true;
         if (response.type == "response") {
             var running = response.running;
