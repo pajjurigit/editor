@@ -23,6 +23,7 @@ var O3Socket = function(ip, port, o3) {
     };
 
     this.send = function(msg) {
+//        console.log("> sent to socket:\n", msg)
         this.$socket.send(msg);
     };
 
@@ -46,6 +47,7 @@ var O3Socket = function(ip, port, o3) {
 
         socket.onreceive = function() {
             self.receivedText = socket.receivedText;
+//            console.log("> received from socket:\n", self.receivedText, self.receivedText.length)
             self.onreceive && self.onreceive();
         };
         this.$socket.connect(this.$ip, this.$port);
