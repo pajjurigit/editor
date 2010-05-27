@@ -30,14 +30,18 @@ var ChromeDebugMessageStream = function(socket) {
     };
 
     this.$onhandshake = function() {
-        var lastChunk = this.$socket.receivedText;
+        this.$received += this.$socket.receivedText;
         this.$socket.clearBuffer();
 
-        if (lastChunk !== this.MSG_HANDSHAKE) {
+        if (this.$received.length < this.MSG_HANDSHAKE.length)
+            return;
+        
+        if (this.$received.indexOf(this.MSG_HANDSHAKE) !== 0) {
             this.$socket.onreceive = null;
             return this.$onerror();
         }
 
+        this.$received = this.$received.substring(this.MSG_HANDSHAKE.length); 
         this.$socket.onreceive = null;
         this.$reader = new MessageReader(this.$socket, ace.bind(this.$onMessage, this));
 
@@ -47,6 +51,7 @@ var ChromeDebugMessageStream = function(socket) {
     this.$onMessage = function(messageText) {
         var self = this;
         setTimeout(function() {
+//            console.log("> Received from Chrome:\n", messageText);
             var response = new DevToolsMessage.fromString(messageText);
             self.$dispatchEvent("message", {data: response});
         }, 0);
