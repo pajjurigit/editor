@@ -42,7 +42,9 @@ var O3Socket = function(ip, port, o3) {
             self.state = "connected";
             socket.receive();
             self.onconnect && self.onconnect();
-            socket.onconnect = 0;
+            try {
+                socket.onconnect = 0;
+            } catch(e) {}
         };
 
         socket.onreceive = function() {
