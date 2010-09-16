@@ -1,5 +1,5 @@
-var WebSocketV8DebuggerService = function() {
-    this.$socket = new io.Socket("localhost", {rememberTransport: false, port: 3000});
+var WebSocketV8DebuggerService = function(socket) {
+    this.$socket = socket;
     this.$attached = false;
 };
 
@@ -9,31 +9,29 @@ var WebSocketV8DebuggerService = function() {
 
     this.attach = function(tabId, callback) {
         if (this.$attached)
-            throw new Error("already attached!");
+            return callback(new Error("already attached!"));
 
         var self = this;
-
-        this.$socket.addEvent("connect", function() {
-            callback();
-        });
-
-        this.$socket.addEvent("message", function(data) {
-//            console.log("RECEIVE:", data);
-            self.$dispatchEvent("debugger_command_0", {data: JSON.parse(data)});
+        this.$socket.on("message", function(data) {
+            console.log("RECEIVE:", data);
+            var message = JSON.parse(data);
+            if (message.type == "debug-ready")
+                return callback();
+            else if (message.type == "debug")
+                self.$dispatchEvent("debugger_command_0", {data: message.body});
         });
 
         this.$socket.connect();
     };
 
     this.detach = function(tabId, callback) {
-        this.$socket.disconnect();
         this.$attached = false;
         callback();
     };
 
     this.debuggerCommand = function(tabId, v8Command) {
-//        console.log("RECEIVE:", v8Command);
-        this.$socket.send(v8Command);
+        console.log("SEND:", v8Command);
+        this.$socket.send(JSON.stringify({command: "debug", body: JSON.parse(v8Command)}));
     };
 
 }).call(WebSocketV8DebuggerService.prototype);
