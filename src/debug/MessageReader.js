@@ -47,4 +47,4 @@ var MessageReader = function(socket, callback) {
 
 return MessageReader;
 
-)};
+});
