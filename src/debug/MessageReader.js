@@ -1,3 +1,5 @@
+require.def("debug/MessageReader", ["ace/ace"], function(ace) {
+
 var MessageReader = function(socket, callback) {
     this.$socket = socket;
     this.$callback = callback;
@@ -42,3 +44,7 @@ var MessageReader = function(socket, callback) {
     };
 
 }).call(MessageReader.prototype);
+
+return MessageReader;
+
+)};

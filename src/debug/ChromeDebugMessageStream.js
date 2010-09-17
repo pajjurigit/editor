@@ -1,10 +1,14 @@
+require.def("debug/ChromeDebugMessageStream", 
+    ["ace/ace", "ace/MEventEmitter"], 
+    function(ace, MEventEmitter) {
+
 var ChromeDebugMessageStream = function(socket) {
     this.$socket = socket;
 };
 
 (function() {
 
-    ace.implement(this, ace.MEventEmitter);
+    ace.implement(this, MEventEmitter);
 
     this.$received = "";
 
@@ -64,3 +68,7 @@ var ChromeDebugMessageStream = function(socket) {
     this.MSG_HANDSHAKE = "ChromeDevToolsHandshake\r\n";
 
 }).call(ChromeDebugMessageStream.prototype);
+
+return ChromeDebugMessageStream;
+
+});

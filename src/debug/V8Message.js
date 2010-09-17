@@ -1,3 +1,5 @@
+require.def("debug/V8Message", ["ace/ace"], function(ace) {
+
 var V8Message = function(type) {
     this.seq = V8Message.$seq++;
     this.type = type;
@@ -48,3 +50,7 @@ V8Message.fromObject = function(obj) {
     ace.mixin(msg, obj);
     return msg;
 };
+
+return V8Message;
+
+});

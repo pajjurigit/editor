@@ -1,3 +1,5 @@
+require.def("debug/DevToolsMessage", function() {
+
 var DevToolsMessage = function(headers, content) {
     this.$headers = {};
     this.$content = "";
@@ -65,3 +67,7 @@ var DevToolsMessage = function(headers, content) {
 DevToolsMessage.fromString = function(msgString) {
     return new DevToolsMessage().parse(msgString);
 };
+
+return DevToolsMessage;
+
+});

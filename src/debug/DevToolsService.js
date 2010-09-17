@@ -1,3 +1,5 @@
+require.def("debug/DevToolsService", function() {
+        
 var DevToolsService = function(msgStream) {
     this.$msgStream = msgStream;
     this.$pending = [];
@@ -35,3 +37,7 @@ var DevToolsService = function(msgStream) {
     };
 
 }).call(DevToolsService.prototype);
+
+return DevToolsService;
+
+});
