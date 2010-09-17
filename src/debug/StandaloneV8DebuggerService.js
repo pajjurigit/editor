@@ -1,3 +1,7 @@
+require.def("debug/StandaloneV8DebuggerService", 
+    ["ace/ace", "ace/MEventEmitter"], 
+    function(ace, MEventEmitter) {
+
 var StandaloneV8DebuggerService = function(socket) {
     this.$socket = socket;
     this.$attached = false;
@@ -5,7 +9,7 @@ var StandaloneV8DebuggerService = function(socket) {
 
 (function() {
 
-    ace.implement(this, ace.MEventEmitter);
+    ace.implement(this, MEventEmitter);
 
     this.attach = function(tabId, callback) {
         if (this.$attached)
@@ -48,3 +52,7 @@ var StandaloneV8DebuggerService = function(socket) {
     };
 
 }).call(StandaloneV8DebuggerService.prototype);
+
+return StandaloneV8DebuggerService;
+
+});

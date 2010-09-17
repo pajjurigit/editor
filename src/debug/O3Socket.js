@@ -1,3 +1,5 @@
+require.def("debug/O3Socket", function() {
+
 var O3Socket = function(ip, port, o3) {
     this.$socket = o3.socketTCP();
     this.$socket.packetSize = 8192;
@@ -42,7 +44,9 @@ var O3Socket = function(ip, port, o3) {
             self.state = "connected";
             socket.receive();
             self.onconnect && self.onconnect();
-            socket.onconnect = 0;
+            try {
+                socket.onconnect = 0;
+            } catch(e) {}
         };
 
         socket.onreceive = function() {
@@ -54,3 +58,7 @@ var O3Socket = function(ip, port, o3) {
     };
 
 }).call(O3Socket.prototype);
+
+return O3Socket;
+
+});

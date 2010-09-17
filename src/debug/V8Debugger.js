@@ -1,3 +1,7 @@
+require.def("debug/V8Debugger", 
+    ["ace/ace", "ace/MEventEmitter"], 
+    function(ace, MEventEmitter) {
+        
 var V8Debugger = function(tabId, v8service) {
     this.tabId = tabId;
     this.$running = true;
@@ -24,7 +28,7 @@ var V8Debugger = function(tabId, v8service) {
 
 (function() {
 
-    ace.implement(this, ace.MEventEmitter);
+    ace.implement(this, MEventEmitter);
 
     this.$seq = 0;
 
@@ -194,3 +198,7 @@ var V8Debugger = function(tabId, v8service) {
 V8Debugger.NATIVE_SCRIPTS = 1;
 V8Debugger.EXTENSION_SCRIPTS = 2;
 V8Debugger.NORMAL_SCRIPTS = 4;
+
+return V8Debugger;
+
+});

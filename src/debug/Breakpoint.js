@@ -1,3 +1,5 @@
+require.def("debug/Breakpoint", ["ace/ace"], function(ace) {
+
 var Breakpoint = function(source, line, column) {
     this.source = source;
     this.line = line;
@@ -71,3 +73,7 @@ var Breakpoint = function(source, line, column) {
     };
 
 }).call(Breakpoint.prototype);
+
+return BreakPoint;
+
+});

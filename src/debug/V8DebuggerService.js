@@ -1,3 +1,7 @@
+require.def("debug/V8DebuggerService", 
+    ["ace/ace", "ace/MEventEmitter"], 
+    function(ace, MEventEmitter) {
+        
 var V8DebuggerService = function(msgStream) {
     this.$msgStream = msgStream;
     this.$pending = {};
@@ -74,3 +78,7 @@ var V8DebuggerService = function(msgStream) {
 
 
 }).call(V8DebuggerService.prototype);
+
+return V8DebuggerService;
+
+});

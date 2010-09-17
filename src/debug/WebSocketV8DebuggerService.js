@@ -1,3 +1,7 @@
+require.def("debug/WebSocketV8DebuggerService", 
+    ["ace/ace", "ace/MEventEmitter"], 
+    function(ace, MEventEmitter) {
+
 var WebSocketV8DebuggerService = function(socket) {
     this.$socket = socket;
     this.$attached = false;
@@ -35,3 +39,7 @@ var WebSocketV8DebuggerService = function(socket) {
     };
 
 }).call(WebSocketV8DebuggerService.prototype);
+
+return WebSocketV8DebuggerService;
+
+});
