@@ -30,8 +30,8 @@ var WebSocketV8DebuggerService = function(socket) {
     };
 
     this.debuggerCommand = function(tabId, v8Command) {
-//        console.log("RECEIVE:", v8Command);
-        this.$socket.send(v8Command);
+        console.log("SEND:", v8Command);
+        this.$socket.send(JSON.stringify({command: "debug", body: JSON.parse(v8Command)}));
     };
 
 }).call(WebSocketV8DebuggerService.prototype);
