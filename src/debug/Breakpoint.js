@@ -74,6 +74,6 @@ var Breakpoint = function(source, line, column) {
 
 }).call(Breakpoint.prototype);
 
-return BreakPoint;
+return Breakpoint;
 
 });
