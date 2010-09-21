@@ -1,5 +1,5 @@
-require.def("debug/WebSocketV8DebuggerService", 
-    ["ace/ace", "ace/MEventEmitter"], 
+require.def("debug/WebSocketV8DebuggerService",
+    ["ace/ace", "ace/MEventEmitter"],
     function(ace, MEventEmitter) {
 
 var WebSocketV8DebuggerService = function(socket) {
@@ -9,7 +9,7 @@ var WebSocketV8DebuggerService = function(socket) {
 
 (function() {
 
-    ace.implement(this, ace.MEventEmitter);
+    ace.implement(this, MEventEmitter);
 
     this.attach = function(tabId, callback) {
         if (this.$attached)
@@ -17,15 +17,13 @@ var WebSocketV8DebuggerService = function(socket) {
 
         var self = this;
         this.$socket.on("message", function(data) {
-            console.log("RECEIVE:", data);
+//            console.log("RECEIVE:", data);
             var message = JSON.parse(data);
             if (message.type == "debug-ready")
                 return callback();
             else if (message.type == "debug")
                 self.$dispatchEvent("debugger_command_0", {data: message.body});
         });
-
-        this.$socket.connect();
     };
 
     this.detach = function(tabId, callback) {
@@ -34,7 +32,7 @@ var WebSocketV8DebuggerService = function(socket) {
     };
 
     this.debuggerCommand = function(tabId, v8Command) {
-        console.log("SEND:", v8Command);
+//        console.log("SEND:", v8Command);
         this.$socket.send(JSON.stringify({command: "debug", body: JSON.parse(v8Command)}));
     };
 
