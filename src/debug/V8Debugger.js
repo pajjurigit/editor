@@ -21,7 +21,15 @@ var V8Debugger = function(tabId, v8service) {
             delete pending[requestSeq];
         }
         else if (response.event) {
-            self.$dispatchEvent(response.event, {data: response.body});
+            if (response.event == "break") {
+                var event = JSON.stringify(response.body);
+                if (this.lastBreak != event) {
+                    this.lastBreak = event;
+                    self.$dispatchEvent(response.event, {data: response.body});
+                }
+            }
+            else
+                self.$dispatchEvent(response.event, {data: response.body});
         }
 
         self.$updateRunning(response);
