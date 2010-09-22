@@ -25,7 +25,12 @@ var WebSocketV8DebuggerService = function(socket) {
         var self = this;
         this.$socket.on("message", function(data) {
 //            console.log("RECEIVE:", data);
-            var message = JSON.parse(data);
+            var message;
+            try {
+                message = JSON.parse(data);
+            } catch(e) {
+                return;
+            }
             if (message.type == "debug-ready")
                 return callback();
             else if (message.type == "debug")
