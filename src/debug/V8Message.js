@@ -5,7 +5,10 @@
  * @license LGPLv3 <http://www.gnu.org/licenses/lgpl-3.0.txt>
  * @author Fabian Jakobs <fabian AT ajax DOT org>
  */
-require.def("debug/V8Message", ["ace/ace"], function(ace) {
+
+if (!require.def) require.def = require("requireJS-node")(module);
+
+require.def("debug/V8Message", ["ace/lib/oop"], function(oop) {
 
 var V8Message = function(type) {
     this.seq = V8Message.$seq++;
@@ -29,7 +32,7 @@ var V8Message = function(type) {
 
     this.parse = function(msgString) {
         var json = JSON.parse(msgString);
-        ace.mixin(this, json);
+        oop.mixin(this, json);
         return this;
     };
 
@@ -54,10 +57,9 @@ V8Message.fromString = function(msgString) {
 
 V8Message.fromObject = function(obj) {
     var msg = new V8Message();
-    ace.mixin(msg, obj);
+    oop.mixin(msg, obj);
     return msg;
 };
 
 return V8Message;
-
 });

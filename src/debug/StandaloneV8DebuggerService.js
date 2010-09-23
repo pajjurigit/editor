@@ -5,9 +5,17 @@
  * @license LGPLv3 <http://www.gnu.org/licenses/lgpl-3.0.txt>
  * @author Fabian Jakobs <fabian AT ajax DOT org>
  */
-require.def("debug/StandaloneV8DebuggerService", 
-    ["ace/ace", "ace/MEventEmitter"], 
-    function(ace, MEventEmitter) {
+
+if (!require.def) require.def = require("requireJS-node")(module);
+
+require.def("debug/StandaloneV8DebuggerService",
+    ["ace/lib/oop",
+     "ace/lib/lang",
+     "ace/MEventEmitter",
+     "debug/MessageReader",
+     "debug/DevToolsMessage"
+    ],
+    function(oop, lang, MEventEmitter, MessageReader, DevToolsMessage) {
 
 var StandaloneV8DebuggerService = function(socket) {
     this.$socket = socket;
@@ -16,7 +24,7 @@ var StandaloneV8DebuggerService = function(socket) {
 
 (function() {
 
-    ace.implement(this, MEventEmitter);
+    oop.implement(this, MEventEmitter);
 
     this.attach = function(tabId, callback) {
         if (this.$attached)
@@ -25,7 +33,7 @@ var StandaloneV8DebuggerService = function(socket) {
         var self = this;
         this.$reader = new MessageReader(this.$socket, function(messageText) {
 //            console.log("Connect>", messageText);
-            self.$reader = new MessageReader(self.$socket, ace.bind(self.$onMessage, self));
+            self.$reader = new MessageReader(self.$socket, lang.bind(self.$onMessage, self));
             callback();
         });
         this.$socket.connect();
@@ -43,7 +51,15 @@ var StandaloneV8DebuggerService = function(socket) {
         setTimeout(function() {
 //            console.log("RECEVIE>", messageText);
             var response = new DevToolsMessage.fromString(messageText);
-            var content = JSON.parse(response.getContent());
+
+            if (response.getHeaders()["Type"] == "connect")
+                self.$dispatchEvent("connection");
+
+            var contentText = response.getContent();
+            if (!contentText)
+                return;
+
+            var content = JSON.parse(contentText);
             self.$dispatchEvent("debugger_command_0", {data: content});
         }, 0);
     };

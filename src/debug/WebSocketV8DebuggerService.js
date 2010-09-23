@@ -5,9 +5,12 @@
  * @license LGPLv3 <http://www.gnu.org/licenses/lgpl-3.0.txt>
  * @author Fabian Jakobs <fabian AT ajax DOT org>
  */
+
+if (!require.def) require.def = require("requireJS-node")(module);
+
 require.def("debug/WebSocketV8DebuggerService",
-    ["ace/ace", "ace/MEventEmitter"],
-    function(ace, MEventEmitter) {
+    ["ace/lib/oop", "ace/MEventEmitter"],
+    function(oop, MEventEmitter) {
 
 var WebSocketV8DebuggerService = function(socket) {
     this.$socket = socket;
@@ -16,7 +19,7 @@ var WebSocketV8DebuggerService = function(socket) {
 
 (function() {
 
-    ace.implement(this, MEventEmitter);
+    oop.implement(this, MEventEmitter);
 
     this.attach = function(tabId, callback) {
         if (this.$attached)

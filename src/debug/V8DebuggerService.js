@@ -5,10 +5,10 @@
  * @license LGPLv3 <http://www.gnu.org/licenses/lgpl-3.0.txt>
  * @author Fabian Jakobs <fabian AT ajax DOT org>
  */
-require.def("debug/V8DebuggerService", 
-    ["ace/ace", "ace/MEventEmitter"], 
-    function(ace, MEventEmitter) {
-        
+require.def("debug/V8DebuggerService",
+    ["ace/lib/oop", "ace/MEventEmitter"],
+    function(oop, MEventEmitter) {
+
 var V8DebuggerService = function(msgStream) {
     this.$msgStream = msgStream;
     this.$pending = {};
@@ -40,7 +40,7 @@ var V8DebuggerService = function(msgStream) {
 
 (function() {
 
-    ace.implement(this, ace.MEventEmitter);
+    oop.implement(this, MEventEmitter);
 
     this.attach = function(tabId, callback) {
         this.$send(tabId, "attach", null, callback);
