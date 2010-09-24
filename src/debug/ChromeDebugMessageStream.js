@@ -9,7 +9,9 @@
 if (!require.def) require.def = require("requireJS-node")(module);
 
 require.def("debug/ChromeDebugMessageStream",
-    ["ace/lib/oop", "ace/lib/lang", "ace/MEventEmitter"],
+    ["ace/lib/oop",
+     "ace/lib/lang",
+     "ace/MEventEmitter"],
     function(oop, lang, MEventEmitter) {
 
 var ChromeDebugMessageStream = function(socket) {

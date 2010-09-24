@@ -6,13 +6,14 @@
  * @author Fabian Jakobs <fabian AT ajax DOT org>
  */
 
+
 if (!require.def) require.def = require("requireJS-node")(module);
 
-require.def("debug/WebSocketV8DebuggerService",
+require.def("debug/WSV8DebuggerService",
     ["ace/lib/oop", "ace/MEventEmitter"],
     function(oop, MEventEmitter) {
 
-var WebSocketV8DebuggerService = function(socket) {
+var WSV8DebuggerService = function(socket) {
     this.$socket = socket;
     this.$attached = false;
 };
@@ -26,33 +27,37 @@ var WebSocketV8DebuggerService = function(socket) {
             return callback(new Error("already attached!"));
 
         var self = this;
-        this.$socket.on("message", function(data) {
-//            console.log("RECEIVE:", data);
+
+        this.$onMessage = function(data) {
             var message;
             try {
                 message = JSON.parse(data);
             } catch(e) {
                 return;
             }
-            if (message.type == "debug-ready")
+            if (message.type == "node-debug-ready") {
                 return callback();
-            else if (message.type == "debug")
+            }
+            else if (message.type == "node-debug") {
                 self.$dispatchEvent("debugger_command_0", {data: message.body});
-        });
+            }
+        };
+
+        this.$socket.on("message", this.$onMessage);
     };
 
     this.detach = function(tabId, callback) {
         this.$attached = false;
+        this.$socket.removeListener("message", this.$onMessage);
         callback();
     };
 
     this.debuggerCommand = function(tabId, v8Command) {
-//        console.log("SEND:", v8Command);
-        this.$socket.send(JSON.stringify({command: "debug", body: JSON.parse(v8Command)}));
+        this.$socket.send(JSON.stringify({command: "debugNode", body: JSON.parse(v8Command)}));
     };
 
-}).call(WebSocketV8DebuggerService.prototype);
+}).call(WSV8DebuggerService.prototype);
 
-return WebSocketV8DebuggerService;
+return WSV8DebuggerService;
 
 });

@@ -25,13 +25,16 @@ var NodeSocket = function(ip, port) {
         _self.onend && _self.onend();
     });
 
+    this.$stream.addListener('connect', function () {
+        _self.onconnect && _self.onconnect();
+    });
+
     this.$ip = ip;
     this.$port = port;
 };
 
 (function() {
 
-    this.state = "initialized";
     this.receivedText = "";
 
     // TODO use events
@@ -47,19 +50,15 @@ var NodeSocket = function(ip, port) {
     };
 
     this.send = function(msg) {
-//        console.log("> sent to socket:\n", msg)
+        // console.log("> sent to socket:\n", msg)
         this.$stream.write(msg, 'utf8');
     };
 
     this.setMinReceiveSize = function(minSize) {};
 
     this.$onData = function(data) {
-        if (this.state !== "connected")
-            this.onconnect && this.onconnect();
-
-        this.state = "connected";
-        this.receivedText += data;
-//            console.log("> received from socket:\n", this.receivedText, this.receivedText.length)
+        this.receivedText = data;
+        // console.log("> received from socket:\n", this.receivedText, this.receivedText.length)
         this.onreceive && this.onreceive();
     };
 

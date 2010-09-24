@@ -33,6 +33,7 @@ var StandaloneV8DebuggerService = function(socket) {
         var self = this;
         this.$reader = new MessageReader(this.$socket, function(messageText) {
 //            console.log("Connect>", messageText);
+            self.$dispatchEvent("connect");
             self.$reader = new MessageReader(self.$socket, lang.bind(self.$onMessage, self));
             callback();
         });
@@ -49,11 +50,7 @@ var StandaloneV8DebuggerService = function(socket) {
 
         var self = this;
         setTimeout(function() {
-//            console.log("RECEVIE>", messageText);
             var response = new DevToolsMessage.fromString(messageText);
-
-            if (response.getHeaders()["Type"] == "connect")
-                self.$dispatchEvent("connection");
 
             var contentText = response.getContent();
             if (!contentText)
