@@ -6,9 +6,11 @@
  * @author Fabian Jakobs <fabian AT ajax DOT org>
  */
 require.def("debug/StandaloneV8DebuggerService", 
-    ["ace/ace", "ace/MEventEmitter"], 
-    function(ace, MEventEmitter) {
+    ["ace/lib/oop", "ace/lib/lang", "ace/MEventEmitter"], 
+    function(ace, lang, MEventEmitter) {
 
+if (!require.def) require.def = require("requireJS-node")(module);
+    
 var StandaloneV8DebuggerService = function(socket) {
     this.$socket = socket;
     this.$attached = false;
@@ -16,7 +18,7 @@ var StandaloneV8DebuggerService = function(socket) {
 
 (function() {
 
-    ace.implement(this, MEventEmitter);
+    oop.implement(this, MEventEmitter);
 
     this.attach = function(tabId, callback) {
         if (this.$attached)
@@ -25,7 +27,7 @@ var StandaloneV8DebuggerService = function(socket) {
         var self = this;
         this.$reader = new MessageReader(this.$socket, function(messageText) {
 //            console.log("Connect>", messageText);
-            self.$reader = new MessageReader(self.$socket, ace.bind(self.$onMessage, self));
+            self.$reader = new MessageReader(self.$socket, lang.bind(self.$onMessage, self));
             callback();
         });
         this.$socket.connect();
