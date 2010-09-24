@@ -5,6 +5,9 @@
  * @license LGPLv3 <http://www.gnu.org/licenses/lgpl-3.0.txt>
  * @author Fabian Jakobs <fabian AT ajax DOT org>
  */
+
+if (!require.def) require.def = require("requireJS-node")(module);
+
 require.def("debug/O3Socket", function() {
 
 var O3Socket = function(ip, port, o3) {
@@ -43,7 +46,7 @@ var O3Socket = function(ip, port, o3) {
     this.setMinReceiveSize = function(minSize) {
         this.$socket.minReceiveSize = minSize;
     };
-    
+
     this.connect = function() {
         var socket = this.$socket;
         var self = this;

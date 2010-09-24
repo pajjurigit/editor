@@ -5,11 +5,14 @@
  * @license LGPLv3 <http://www.gnu.org/licenses/lgpl-3.0.txt>
  * @author Fabian Jakobs <fabian AT ajax DOT org>
  */
+
+if (!require.def) require.def = require("requireJS-node")(module);
+
 require.def("debug/V8Debugger",
-    ["ace/ace",
+    ["ace/lib/oop",
      "ace/MEventEmitter",
      "debug/V8Message"],
-    function(ace, MEventEmitter, V8Message) {
+    function(oop, MEventEmitter, V8Message) {
 
 var V8Debugger = function(tabId, v8service) {
     this.tabId = tabId;
@@ -24,7 +27,11 @@ var V8Debugger = function(tabId, v8service) {
 
         var requestSeq = response.request_seq;
         if (pending[requestSeq]) {
-            pending[requestSeq](response.body, response.refs || null);
+            pending[requestSeq](
+              response.body, 
+              response.refs || null, 
+              !response.success && {message: response.message} || null
+            );
             delete pending[requestSeq];
         }
         else if (response.event) {
@@ -45,7 +52,7 @@ var V8Debugger = function(tabId, v8service) {
 
 (function() {
 
-    ace.implement(this, MEventEmitter);
+    oop.implement(this, MEventEmitter);
 
     this.$seq = 0;
 
@@ -148,6 +155,21 @@ var V8Debugger = function(tabId, v8service) {
         if (ids) {
             msg.arguments.ids = ids;
         }
+        this.$send(msg, callback);
+    };
+    
+    this.evaluate = function(expression, frame, global, disableBreak, callback) {
+        var msg = new V8Message("request");
+        msg.command = "evaluate";
+        msg.arguments = {
+            expression : expression
+        };
+        if (frame)
+            msg.arguments.frame = frame;
+        if (global)
+            msg.arguments.global = global;
+        if (disableBreak)
+            msg.arguments.disable_break = disableBreak;
         this.$send(msg, callback);
     };
 

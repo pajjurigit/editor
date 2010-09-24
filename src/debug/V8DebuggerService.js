@@ -45,7 +45,7 @@ var V8DebuggerService = function(msgStream) {
 
 (function() {
 
-    ace.implement(this, ace.MEventEmitter);
+    oop.implement(this, MEventEmitter);
 
     this.attach = function(tabId, callback) {
         this.$send(tabId, "attach", null, callback);

@@ -20,7 +20,7 @@ var ChromeDebugMessageStream = function(socket) {
 
 (function() {
 
-    ace.implement(this, MEventEmitter);
+    oop.implement(this, MEventEmitter);
 
     this.$received = "";
 
@@ -51,15 +51,15 @@ var ChromeDebugMessageStream = function(socket) {
 
         if (this.$received.length < this.MSG_HANDSHAKE.length)
             return;
-        
+
         if (this.$received.indexOf(this.MSG_HANDSHAKE) !== 0) {
             this.$socket.onreceive = null;
             return this.$onerror();
         }
 
-        this.$received = this.$received.substring(this.MSG_HANDSHAKE.length); 
+        this.$received = this.$received.substring(this.MSG_HANDSHAKE.length);
         this.$socket.onreceive = null;
-        this.$reader = new MessageReader(this.$socket, ace.bind(this.$onMessage, this));
+        this.$reader = new MessageReader(this.$socket, lang.bind(this.$onMessage, this));
 
         this.$dispatchEvent("connect");
     };

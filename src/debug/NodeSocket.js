@@ -49,7 +49,7 @@ var NodeSocket = function(ip, port) {
     };
 
     this.send = function(msg) {
-        console.log("> sent to socket:\n", msg)
+        // console.log("> sent to socket:\n", msg)
         this.$stream.write(msg, 'utf8');
     };
 
@@ -57,7 +57,7 @@ var NodeSocket = function(ip, port) {
 
     this.$onData = function(data) {
         this.receivedText = data;
-            console.log("> received from socket:\n", this.receivedText, this.receivedText.length)
+        // console.log("> received from socket:\n", this.receivedText, this.receivedText.length)
         this.onreceive && this.onreceive();
     };
 

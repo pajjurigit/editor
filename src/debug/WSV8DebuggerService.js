@@ -6,6 +6,7 @@
  * @author Fabian Jakobs <fabian AT ajax DOT org>
  */
 
+
 if (!require.def) require.def = require("requireJS-node")(module);
 
 require.def("debug/WSV8DebuggerService",
@@ -35,11 +36,9 @@ var WSV8DebuggerService = function(socket) {
                 return;
             }
             if (message.type == "node-debug-ready") {
-                console.log("NODE ready")
                 return callback();
             }
             else if (message.type == "node-debug") {
-                console.log("RECEIVE", data)
                 self.$dispatchEvent("debugger_command_0", {data: message.body});
             }
         };

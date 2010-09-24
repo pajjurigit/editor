@@ -5,7 +5,10 @@
  * @license LGPLv3 <http://www.gnu.org/licenses/lgpl-3.0.txt>
  * @author Fabian Jakobs <fabian AT ajax DOT org>
  */
-require.def("debug/Breakpoint", ["ace/ace"], function(ace) {
+
+if (!require.def) require.def = require("requireJS-node")(module);
+
+require.def("debug/Breakpoint", ["ace/lib/lang"], function(lang) {
 
 var Breakpoint = function(source, line, column) {
     this.source = source;
@@ -33,7 +36,7 @@ var Breakpoint = function(source, line, column) {
             if (this.state !== "connected")
                 return;
 
-            if (ace.arrayIndexOf(e.data.breakpoints, self.$id) !== -1) {
+            if (lang.arrayIndexOf(e.data.breakpoints, self.$id) !== -1) {
                 self.$dispatchEvent("break");
             }
         };

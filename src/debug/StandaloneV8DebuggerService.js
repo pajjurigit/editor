@@ -9,10 +9,13 @@
 if (!require.def) require.def = require("requireJS-node")(module);
 
 require.def("debug/StandaloneV8DebuggerService",
-    ["ace/lib/oop", 
-     "ace/lib/lang", 
-     "ace/MEventEmitter"],
-    function(ace, lang, MEventEmitter) {
+    ["ace/lib/oop",
+     "ace/lib/lang",
+     "ace/MEventEmitter",
+     "debug/MessageReader",
+     "debug/DevToolsMessage"
+    ],
+    function(oop, lang, MEventEmitter, MessageReader, DevToolsMessage) {
 
 var StandaloneV8DebuggerService = function(socket) {
     this.$socket = socket;
