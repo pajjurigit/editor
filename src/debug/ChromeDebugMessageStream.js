@@ -5,9 +5,14 @@
  * @license LGPLv3 <http://www.gnu.org/licenses/lgpl-3.0.txt>
  * @author Fabian Jakobs <fabian AT ajax DOT org>
  */
-require.def("debug/ChromeDebugMessageStream", 
-    ["ace/ace", "ace/MEventEmitter"], 
-    function(ace, MEventEmitter) {
+
+if (!require.def) require.def = require("requireJS-node")(module);
+
+require.def("debug/ChromeDebugMessageStream",
+    ["ace/lib/oop",
+     "ace/lib/lang",
+     "ace/MEventEmitter"],
+    function(oop, lang, MEventEmitter) {
 
 var ChromeDebugMessageStream = function(socket) {
     this.$socket = socket;

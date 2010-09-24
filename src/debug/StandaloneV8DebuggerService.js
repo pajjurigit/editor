@@ -41,9 +41,13 @@ var StandaloneV8DebuggerService = function(socket) {
 
         var self = this;
         setTimeout(function() {
-//            console.log("RECEVIE>", messageText);
             var response = new DevToolsMessage.fromString(messageText);
-            var content = JSON.parse(response.getContent());
+
+            var contentText = response.getContent();
+            if (!contentText)
+                return;
+
+            var content = JSON.parse(contentText);
             self.$dispatchEvent("debugger_command_0", {data: content});
         }, 0);
     };

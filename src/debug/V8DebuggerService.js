@@ -5,10 +5,15 @@
  * @license LGPLv3 <http://www.gnu.org/licenses/lgpl-3.0.txt>
  * @author Fabian Jakobs <fabian AT ajax DOT org>
  */
-require.def("debug/V8DebuggerService", 
-    ["ace/ace", "ace/MEventEmitter"], 
-    function(ace, MEventEmitter) {
-        
+
+if (!require.def) require.def = require("requireJS-node")(module);
+
+require.def("debug/V8DebuggerService",
+    ["ace/lib/oop",
+     "ace/MEventEmitter",
+     "debug/DevToolsMessage"],
+    function(oop, MEventEmitter, DevToolsMessage) {
+
 var V8DebuggerService = function(msgStream) {
     this.$msgStream = msgStream;
     this.$pending = {};
