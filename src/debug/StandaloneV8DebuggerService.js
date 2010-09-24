@@ -5,12 +5,15 @@
  * @license LGPLv3 <http://www.gnu.org/licenses/lgpl-3.0.txt>
  * @author Fabian Jakobs <fabian AT ajax DOT org>
  */
-require.def("debug/StandaloneV8DebuggerService", 
-    ["ace/lib/oop", "ace/lib/lang", "ace/MEventEmitter"], 
-    function(ace, lang, MEventEmitter) {
 
 if (!require.def) require.def = require("requireJS-node")(module);
-    
+
+require.def("debug/StandaloneV8DebuggerService",
+    ["ace/lib/oop", 
+     "ace/lib/lang", 
+     "ace/MEventEmitter"],
+    function(ace, lang, MEventEmitter) {
+
 var StandaloneV8DebuggerService = function(socket) {
     this.$socket = socket;
     this.$attached = false;
@@ -27,6 +30,7 @@ var StandaloneV8DebuggerService = function(socket) {
         var self = this;
         this.$reader = new MessageReader(this.$socket, function(messageText) {
 //            console.log("Connect>", messageText);
+            self.$dispatchEvent("connect");
             self.$reader = new MessageReader(self.$socket, lang.bind(self.$onMessage, self));
             callback();
         });
