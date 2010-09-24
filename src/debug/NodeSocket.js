@@ -21,6 +21,7 @@ var NodeSocket = function(ip, port) {
 
     this.$stream.addListener('end', function () {
         _self.$stream.end();
+        _self.state = "initialized";
         _self.onend && _self.onend();
     });
 
