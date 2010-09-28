@@ -28,8 +28,8 @@ var V8Debugger = function(tabId, v8service) {
         var requestSeq = response.request_seq;
         if (pending[requestSeq]) {
             pending[requestSeq](
-              response.body, 
-              response.refs || null, 
+              response.body,
+              response.refs || null,
               !response.success && {message: response.message} || null
             );
             delete pending[requestSeq];
@@ -157,7 +157,7 @@ var V8Debugger = function(tabId, v8service) {
         }
         this.$send(msg, callback);
     };
-    
+
     this.evaluate = function(expression, frame, global, disableBreak, callback) {
         var msg = new V8Message("request");
         msg.command = "evaluate";
@@ -218,6 +218,12 @@ var V8Debugger = function(tabId, v8service) {
         msg.arguments = {
             breakpoint: breakpoint
         };
+        this.$send(msg, callback);
+    };
+
+    this.listbreakpoints = function(callback) {
+        var msg = new V8Message("request");
+        msg.command = "listbreakpoints";
         this.$send(msg, callback);
     };
 
