@@ -10,27 +10,44 @@ if (!require.def) require.def = require("requireJS-node")(module);
 
 require.def("debug/Breakpoint", ["ace/lib/lang"], function(lang) {
 
-var Breakpoint = function(source, line, column) {
+var Breakpoint = function(source, line, column, isAttached) {
     this.source = source;
     this.line = line;
-    this.column = column;
+    this.column = column || 0;
 
     this.enabled = true;
     this.condition = "";
     this.ignoreCount = 0;
 
-    this.state = "initialized";
+    if (isAttached) {
+        this.state = "connected";
+        this.$listen();
+    }
+    else
+        this.state = "initialized";
 };
 
 (function() {
 
     this.attach = function(dbg, callback) {
+        var self = this;
+
         if (this.state !== "initialized")
             throw new Error("Already attached");
 
         this.$dbg = dbg;
         this.state = "connecting";
 
+        this.$listen();
+        dbg.setbreakpoint("script", self.source, self.line, self.column, self.enabled, self.condition, self.ignoreCount, function(body) {
+            self.state = "connected";
+            self.$id = body.breakpoint;
+            self.line = body.line;
+            callback(self);
+        });
+    };
+
+    this.$listen = function() {
         var self = this;
         this.$onbreak = function(e) {
             if (this.state !== "connected")
@@ -41,13 +58,6 @@ var Breakpoint = function(source, line, column) {
             }
         };
         dbg.addEventListener("break", this.$onbreak);
-
-        dbg.setbreakpoint("script", self.source, self.line, self.column, self.enabled, self.condition, self.ignoreCount, function(body) {
-            self.state = "connected";
-            self.$id = body.breakpoint;
-            self.line = body.line;
-            callback(self);
-        });
     };
 
     this.clear = function(callback) {
@@ -82,7 +92,23 @@ var Breakpoint = function(source, line, column) {
         this.$dbg.changeBreakpoint(this.$id, this.enabled, this.condition, this.ignoreCount, callback);
     };
 
+    this.destroy = function() {
+        dbg.removeEventListener("break", this.$onbreak);
+    };
+
 }).call(Breakpoint.prototype);
+
+Breakpoint.fromJson = function(breakpoint, isAttached) {
+    if (breakpoint.type != "scriptName")
+        throw new Error("unsupported breakpoint type: " + breakpoint.type);
+
+    var bp = new Breakpoint(breakpoint.script_name, breakpoint.line, breakpoint.column, isAttached);
+    bp.condition = breakpoint.condition || "";
+    bp.ignoreCount = breakpoint.ignoreCount || 0;
+    bp.enabled = breakpoint.active;
+    bp.$id = breakpoint.number;
+    return bp;
+};
 
 return Breakpoint;
 
