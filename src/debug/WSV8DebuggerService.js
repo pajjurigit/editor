@@ -10,12 +10,16 @@
 if (!require.def) require.def = require("requireJS-node")(module);
 
 require.def("debug/WSV8DebuggerService",
-    ["ace/lib/oop", "ace/MEventEmitter"],
-    function(oop, MEventEmitter) {
+    ["ace/lib/oop",
+     "ace/lib/lang",
+     "ace/MEventEmitter"
+    ],
+    function(oop, lang, MEventEmitter) {
 
 var WSV8DebuggerService = function(socket) {
     this.$socket = socket;
-    this.$attached = false;
+    this.$state = "initialized";
+    this.$onAttach = [];
 };
 
 (function() {
@@ -23,31 +27,38 @@ var WSV8DebuggerService = function(socket) {
     oop.implement(this, MEventEmitter);
 
     this.attach = function(tabId, callback) {
-        if (this.$attached)
+        if (this.$state == "connected")
             return callback(new Error("already attached!"));
 
-        var self = this;
+        this.$onAttach.push(callback);
 
-        this.$onMessage = function(data) {
-            var message;
-            try {
-                message = JSON.parse(data);
-            } catch(e) {
-                return;
-            }
-            if (message.type == "node-debug-ready") {
-                return callback();
-            }
-            else if (message.type == "node-debug") {
-                self.$dispatchEvent("debugger_command_0", {data: message.body});
-            }
-        };
+        if (this.$state != "connected") {
+            this.$socket.send(JSON.stringify({command: "DebugAttachNode"}));
+            this.$socket.on("message", lang.bind(this.$onMessage, this));
+            this.$state = "connecting";
+        }
+    };
 
-        this.$socket.on("message", this.$onMessage);
+    this.$onMessage = function(data) {
+        var message;
+        try {
+            message = JSON.parse(data);
+        } catch(e) {
+            return;
+        }
+        if (message.type == "node-debug-ready") {
+            this.$state = "connected";
+            for (var i=0; i<this.$onAttach.length; i++)
+                this.$onAttach[i]();
+            this.$onAttach = [];
+        }
+        else if (message.type == "node-debug") {
+            this.$dispatchEvent("debugger_command_0", {data: message.body});
+        }
     };
 
     this.detach = function(tabId, callback) {
-        this.$attached = false;
+        this.$state = "initialized";
         this.$socket.removeListener("message", this.$onMessage);
         callback();
     };
