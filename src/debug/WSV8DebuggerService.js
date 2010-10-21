@@ -59,7 +59,7 @@ var WSV8DebuggerService = function(socket) {
 
     this.detach = function(tabId, callback) {
         this.$state = "initialized";
-        this.$socket.removeListener("message", this.$onMessage);
+        this.$socket.removeEvent("message", this.$onMessage);
         callback();
     };
 

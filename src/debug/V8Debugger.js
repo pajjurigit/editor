@@ -234,7 +234,9 @@ var V8Debugger = function(tabId, v8service) {
     };
 
     this.$send = function(msg, callback) {
-        this.$pending[msg.seq] = callback;
+        if (callback)
+            this.$pending[msg.seq] = callback;
+            
         this.$service.debuggerCommand(this.tabId, msg.stringify());
     };
 
