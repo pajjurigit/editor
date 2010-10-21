@@ -5,6 +5,13 @@
  * @license LGPLv3 <http://www.gnu.org/licenses/lgpl-3.0.txt>
  * @author Fabian Jakobs <fabian AT ajax DOT org>
  */
+
+require.def([
+     "debug/DevToolsMessage"
+ ], function(
+     DevToolsMessage
+ ) {
+
 var DevToolMessageTest = new TestCase("DevToolMessageTest", {
     "test: parse message" : function() {
         var msgString = ["Destination:", "Tool:DevToolsService",
@@ -35,4 +42,6 @@ var DevToolMessageTest = new TestCase("DevToolMessageTest", {
 
         assertEquals(msgString, msg.stringify());
     }
+});
+
 });
